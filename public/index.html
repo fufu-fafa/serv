@@ -13,30 +13,48 @@
             height: 100vh;
             background-color: #f4f4f4;
         }
+
+        .container {
+            background: white;
+            padding: 20px;
+            width: 10vw;
+            border-radius: 5;
+        }
+        
+        input, button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
     <h2>Register</h2>
-    <form id="registerForm">
-        <label for="regUsername">Username:</label>
-        <input type="text" id="regUsername" name="username" required>
-        <br>
-        <label for="regPassword">Password:</label>
-        <input type="password" id="regPassword" name="password" required>
-        <br>
-        <button type="submit">Register</button>
-    </form>
+    <div class="container">
+        <form id="registerForm">
+            <label for="regUsername">Username:</label>
+            <input type="text" id="regUsername" name="username" required>
+            <br>
+            <label for="regPassword">Password:</label>
+            <input type="password" id="regPassword" name="password" required>
+            <br>
+            <button type="submit">Register</button>
+        </form>
+    </div>
 
-    <h2>Login</h2>
-    <form id="loginForm">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 
     <script>
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
