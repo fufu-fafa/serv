@@ -63,15 +63,22 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Protected Route
-app.get('/protected', (req, res) => {
-    const token = req.headers.authorization;
+// Middleware to check authentication
+const authenticate = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Get token from "Bearer <token>"
+
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    
+
     jwt.verify(token, SECRET_KEY, (err, decoded) => {
         if (err) return res.status(401).json({ error: 'Invalid token' });
-        res.json({ message: 'Protected data', userId: decoded.userId });
+        req.user = decoded; // Store user info in request object
+        next();
     });
+};
+
+// Serve correct.html only if authenticated
+app.get('/correct', authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'protected', 'correct.html'));
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
