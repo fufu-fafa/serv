@@ -6,7 +6,30 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script>
+			async function checkAuth() {
+				const token = localStorage.getItem('token');
+
+				if (!token) {
+					alert('Unauthorized! Redirecting to login...');
+					window.location.href = '/';
+					return;
+				}
+
+				const response = await fetch('/protected', {
+					method: 'GET',
+					headers: { 'Authorization': `Bearer ${token}` }
+				});
+
+				if (!response.ok) {
+					alert('Session expired. Please log in again.');
+					localStorage.removeItem('token'); // Clear invalid token
+					window.location.href = '/';
+				}
+			}
+
+			window.onload = checkAuth;
+		</script>
 	</head>
 	<body class="is-preload">
 
