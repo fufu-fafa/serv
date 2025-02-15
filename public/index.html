@@ -122,8 +122,20 @@
             
             const data = await response.json();
             if (response.ok) {
+                localStorage.setItem('token', data.token); // Store token in localStorage
                 alert('Login successful! Redirecting...');
-                window.location.href = "public/correct.html"; // Redirect on successful login
+
+                // Fetch the correct page with token
+                const correctResponse = await fetch('/correct', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${data.token}` }
+                });
+
+                if (correctResponse.ok) {
+                    window.location.href = '/correct'; // Redirect to protected route
+                } else {
+                    alert('Access denied!');
+                }
             } else {
                 alert('Login failed: ' + data.error);
             }
