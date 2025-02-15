@@ -65,16 +65,23 @@ app.post('/login', (req, res) => {
 
 // Middleware to check authentication
 const authenticate = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Get token from "Bearer <token>"
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'Unauthorized: No token provided' });
 
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    const token = authHeader.split(' ')[1]; // Extract token
 
     jwt.verify(token, SECRET_KEY, (err, decoded) => {
-        if (err) return res.status(401).json({ error: 'Invalid token' });
-        req.user = decoded; // Store user info in request object
+        if (err) return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+        req.user = decoded; // Attach user data to request
         next();
     });
 };
+
+// Protect `/correct` page
+app.get('/correct', authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'protected', 'correct.html'));
+});
+
 
 // Serve correct.html only if authenticated
 app.get('/correct', authenticate, (req, res) => {

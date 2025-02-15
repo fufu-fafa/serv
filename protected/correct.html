@@ -7,27 +7,34 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<script>
-			async function checkAuth() {
-				const token = localStorage.getItem('token');
+			        async function checkAuth() {
+            const token = localStorage.getItem('token');
 
-				if (!token) {
-					alert('Unauthorized! Redirecting to login...');
-					window.location.href = '/';
-					return;
-				}
+            if (!token) {
+                alert('Unauthorized! Redirecting to login...');
+                window.location.href = '/';
+                return;
+            }
 
-				const response = await fetch('/correct', {
-					method: 'GET',
-					headers: { 'Authorization': `Bearer ${token}` } // ✅ Send token
-				});
+            try {
+                const response = await fetch('/protected', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    cache: 'no-store' // Ensure it doesn't use a cached response
+                });
 
-				if (!response.ok) {
-					alert('Session expired. Please log in again.');
-					localStorage.removeItem('token'); // Clear invalid token
-					window.location.href = '/';
-				}
-			}
-			window.onload = checkAuth;
+                if (!response.ok) {
+                    throw new Error('Unauthorized');
+                }
+
+                const data = await response.json();
+                console.log('User ID:', data.userId);
+            } catch (error) {
+                alert('Session expired. Please log in again.');
+                localStorage.removeItem('token'); // Remove the invalid token
+                window.location.href = '/';
+            }
+        }
 		</script>
 	</head>
 	<body class="is-preload">
