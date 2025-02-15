@@ -17,8 +17,10 @@
         .container {
             background: white;
             padding: 20px;
-            width: 10vw;
-            border-radius: 5;
+            width: 300px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         input, button {
@@ -27,36 +29,66 @@
             margin: 10px auto;
             padding: 10px;
         }
+
+        .hidden {
+            display: none;
+        }
+
+        .toggle-link {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Register</h2>
+        <h2 id="formTitle">Register</h2>
+
         <form id="registerForm">
             <label for="regUsername">Username:</label>
             <input type="text" id="regUsername" name="username" required>
-            <br>
+            
             <label for="regPassword">Password:</label>
             <input type="password" id="regPassword" name="password" required>
-            <br>
+            
             <button type="submit">Register</button>
         </form>
-    </div>
 
-    <div class="container">
-        <h2>Login</h2>
-        <form id="loginForm">
+        <form id="loginForm" class="hidden">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
-            <br>
+            
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <br>
+            
             <button type="submit">Login</button>
         </form>
+
+        <p class="toggle-link" onclick="toggleForms()">Already have an account? Login here.</p>
     </div>
 
     <script>
+        function toggleForms() {
+            const registerForm = document.getElementById('registerForm');
+            const loginForm = document.getElementById('loginForm');
+            const formTitle = document.getElementById('formTitle');
+            const toggleText = document.querySelector('.toggle-link');
+
+            if (registerForm.classList.contains('hidden')) {
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                formTitle.innerText = "Register";
+                toggleText.innerText = "Already have an account? Login here.";
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                formTitle.innerText = "Login";
+                toggleText.innerText = "Don't have an account? Register here.";
+            }
+        }
+
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('regUsername').value;
@@ -70,7 +102,8 @@
             
             const data = await response.json();
             if (response.ok) {
-                alert('User registered successfully!');
+                alert('User registered successfully! Please log in.');
+                toggleForms(); // Switch to login form after successful registration
             } else {
                 alert('Registration failed: ' + data.error);
             }
@@ -89,7 +122,8 @@
             
             const data = await response.json();
             if (response.ok) {
-                alert('Login successful! Token: ' + data.token);
+                alert('Login successful! Redirecting...');
+                window.location.href = "public/correct.html"; // Redirect on successful login
             } else {
                 alert('Login failed: ' + data.error);
             }
