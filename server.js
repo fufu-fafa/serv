@@ -81,4 +81,10 @@ app.get('/correct', authenticate, (req, res) => {
     res.sendFile(path.join(__dirname, 'protected', 'correct.html'));
 });
 
+// no caching
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next();
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
