@@ -122,17 +122,19 @@
             
             const data = await response.json();
             if (response.ok) {
-                localStorage.setItem('token', data.token); // Store token in localStorage
-                alert('Login successful! Redirecting...');
+                try {
+                    localStorage.setItem('token', data.token);
+                } catch (e) {
+                    console.error('LocalStorage is unavailable', e);
+                }
 
-                // Fetch the correct page with token
                 const correctResponse = await fetch('/correct', {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${data.token}` }
                 });
 
                 if (correctResponse.ok) {
-                    window.location.href = '/correct'; // Redirect to protected route
+                    document.documentElement.innerHTML = await correctResponse.text();
                 } else {
                     alert('Access denied!');
                 }
